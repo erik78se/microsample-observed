@@ -137,6 +137,6 @@ Finally, test that the service works by calling it through the juju exec mechani
 
 We succeeded with our sourcery!
 
-*Note: If you open up the firewall for your cloud, you can test the service directly with curl. On some clouds that supports manipulation of firewalls, juju can do this for us with "juju expose".*
+*Note: If you open up the firewall for your cloud, you can test the service directly with curl. On some clouds that supports manipulation of firewalls, juju can do this for us with self.unit.open_port(protocol='tcp', port=8080) which is used with "juju expose".*
 
 ## 

@@ -1,0 +1,5 @@
+name: microsample-observed
+display-name: microsample-observed
+summary: Microsample (machine-charm)
+description: |
+  A charm that deploys the microsample snap to a machine class cloud.

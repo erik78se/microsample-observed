@@ -25,3 +25,57 @@ Update the _on_install funtion in charm.py to make use of the new config option:
         else:
             self.unit.status = ops.BlockedStatus("Invalid channel configured.")
 ```
+
+Now, pack the charm again and upgrade the application in the model. You will now see the config option in the settings section.
+
+```
+charmcraft pack
+
+juju upgrade-charm microsample-observed --path=./microsample-observed_ubuntu-22.04-amd64.charm
+
+juju config microsample-observed
+
+application: microsample-observed
+application-config:
+  trust:
+    default: false
+    description: Does this application have access to trusted credentials
+    source: default
+    type: bool
+    value: false
+charm: microsample-observed
+settings:
+  channel:
+    default: edge
+    description: Channel for microsample snap.
+    source: default
+    type: string
+    value: edge
+
+```
+
+Now, lets add code to act on the config-changed event.
+
+Add the following the the __init__() function:
+
+```self.framework.observe(self.on.config_changed, self._on_config_changed)```
+
+Add the corresponding _on_config_changed() and lets also let us know something in the status message about the configuration:
+
+```
+    def _on_config_changed(self,theevent):
+        channel = self.config.get('channel')
+        if channel in ['beta', 'edge', 'candidate', 'stable']:
+            os.system(f"snap refresh microsample --{channel}")
+            self.unit.status = ops.ActiveStatus("Ready at '%s'" % channel)
+        else:
+            self.unit.status = ops.BlockedStatus("Invalid channel configured.")
+```
+
+Pack, upgrade and finally try change the channel:
+
+```
+juju config microsample-observed channel=beta
+juju status
+```
+![juju status](juju_status_config_changed.png)

@@ -23,8 +23,12 @@ class MicrosampleObservedCharm(ops.CharmBase):
     def _on_install(self, theevent):
         """Handle install event."""
         self.unit.status = ops.MaintenanceStatus("Installing microsample snap")
-        os.system(f"snap install microsample --channel edge")
-        self.unit.status = ops.ActiveStatus("Ready")  
+        channel = self.config.get('channel')
+        if channel in ['beta', 'edge', 'candidate', 'stable']:
+            os.system(f"snap install microsample --{channel}")
+            self.unit.status = ops.ActiveStatus("Ready")
+        else:
+            self.unit.status = ops.BlockedStatus("Invalid channel configured.")
 
 
 if __name__ == "__main__":  # pragma: nocover

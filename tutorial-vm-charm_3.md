@@ -1,7 +1,17 @@
-#!/usr/bin/env python3
-# Author: erik.lonroth@gmail.com
-# License: Apache2
+Now, lets add some code that interacts with snapd to get some information about the microsample.
 
+For this, we are going to need the "requests_unixsocket" package that allows us to interact directly with snapd over a unix socket.
+
+Add the following two packages to the "requirements.txt" file. They will be automatically picked up by charmcraft, added to our charm and installed/upgraded when we upgrade the charm.
+
+The requirements.txt should look like this.
+```
+ops ~= 2.4
+requests==2.28.1
+requests-unixsocket==0.3.0
+```
+The charm.py should now look like this:
+```
 import os
 import logging
 import ops
@@ -64,3 +74,15 @@ class MicrosampleObservedCharm(ops.CharmBase):
 
 if __name__ == "__main__":  # pragma: nocover
     ops.main(MicrosampleObservedCharm)  # type: ignore
+```
+
+If the handling of snap versions is daunting, you can skip that part and call *set_workload_version('v1.0')* and continue with the tutorial.
+
+NOTE! You might need to upgrade applications in an error state with:
+
+```
+juju upgrade-charm ./<charm> --force-units
+juju resolved <unit>
+```
+
+Congratulations, you have made it so far! Lets continue to add a Juju integration!

@@ -1,0 +1,6 @@
+options:
+  channel:
+    type: string
+    default: "edge"
+    description: "Channel for microsample snap."
+
